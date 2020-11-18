@@ -1,0 +1,20 @@
+{
+	"configs":
+	{
+		"hdsdr_port":"COM4",
+		"antenna_port": "COM8",
+		"hdsdr_freq":"436.400",
+		"rfcb_freq":"145.600",
+		"lon":"34.826293",
+		"lat":"32.164634",
+		"elev":"0",
+		"Time for tuning antennas": "5",
+		"offset": "0.008", 
+		"satellite name":"DUCHIFAT-3"
+	}
+
+
+
+
+
+}
