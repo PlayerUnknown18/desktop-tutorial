@@ -1,7 +1,7 @@
 {
 	"configs":
 	{
-		"hdsdr_port":"COM4",
+		"hdsdr_port":"COM30",
 		"antenna_port": "COM8",
 		"hdsdr_freq":"436.400",
 		"rfcb_freq":"145.600",
