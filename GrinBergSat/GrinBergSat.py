@@ -120,6 +120,15 @@ def update_modulation(sock_io):
     FSK_CODE = bytearray(FSK_CODE)
     sock_io.send(FSK_CODE)
 
+
+def get_sat_name(norad):
+    sat_list = requests.get("https://db.satnogs.org/api/satellites/").text
+    sat_list = json.loads(sat_list)
+    for i in sat_list:
+        if i.get("norad_cat_id") == norad:
+            return i.get("name")
+
+
 def main():
     socket_conn = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     socket_conn.connect(("127.0.0.1",4532))
@@ -136,6 +145,7 @@ def main():
     ant.start()
     rfcbDpThread.start()
     dp.update_dopler_hdsdr()
+
 
 
 if __name__ == '__main__':
