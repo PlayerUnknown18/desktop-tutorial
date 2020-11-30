@@ -90,7 +90,7 @@ class UpdateSatelliteCords:
         while True:
             time.sleep(self.time_for_tuning_antennas)
             utc_time_now = datetime.datetime.utcnow()
-            orbital_object = pyorbital.orbital.Orbital("HOOPOE3",line1="1 44854U 19089C   20105.08353363  .00000392  00000-0  38174-4 0  9992",line2="2 44854  36.9667 118.7522 0008964 267.1671  92.8072 14.99021056 18630")
+            orbital_object = pyorbital.orbital.Orbital("HOOPOE3","active.txt")
             self.azimuth,self.elevation = orbital_object.get_observer_look(utc_time_now,self.station_lon,self.station_lat,self.station_alt)
             print(f"satellite azimuth now:{self.azimuth}")
             print(f"satellite elevation now:{self.elevation}")
