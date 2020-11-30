@@ -72,7 +72,8 @@ class UpdateSatelliteCords:
         self.azimuth = 18.9
         self.elevation = 20.1
         self.__elevation_to_radians_number = 180
-        self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)["DUCHIFAT-3"]
+        self.satellite_name = get_sat_name(self.config_data.norad_id)
+        self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
         self.station_lon = jinfo_object.station_lon
         self.station_lat = jinfo_object.station_lat
         self.station_alt = jinfo_object.station_elev
@@ -90,7 +91,7 @@ class UpdateSatelliteCords:
         while True:
             time.sleep(self.time_for_tuning_antennas)
             utc_time_now = datetime.datetime.utcnow()
-            orbital_object = pyorbital.orbital.Orbital("HOOPOE3","active.txt")
+            orbital_object = pyorbital.orbital.Orbital(self.satellite_name,"active.txt")
             self.azimuth,self.elevation = orbital_object.get_observer_look(utc_time_now,self.station_lon,self.station_lat,self.station_alt)
             print(f"satellite azimuth now:{self.azimuth}")
             print(f"satellite elevation now:{self.elevation}")
