@@ -73,6 +73,8 @@ class UpdateSatelliteCords:
         self.elevation = 20.1
         self.__elevation_to_radians_number = 180
         self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.config_data.satellite_name]
+        self.satellite_name = get_sat_name(self.config_data.norad_id)
+        self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
         self.station_lon = jinfo_object.station_lon
         self.station_lat = jinfo_object.station_lat
         self.station_alt = jinfo_object.station_elev
@@ -91,6 +93,7 @@ class UpdateSatelliteCords:
             time.sleep(self.time_for_tuning_antennas)
             utc_time_now = datetime.datetime.utcnow()
             orbital_object = pyorbital.orbital.Orbital(self.config_data.satellite_name,"active.txt")
+            orbital_object = pyorbital.orbital.Orbital(self.satellite_name,"active.txt")
             self.azimuth,self.elevation = orbital_object.get_observer_look(utc_time_now,self.station_lon,self.station_lat,self.station_alt)
             print(f"satellite azimuth now:{self.azimuth}")
             print(f"satellite elevation now:{self.elevation}")
@@ -121,6 +124,7 @@ def update_modulation(sock_io):
     sock_io.send(FSK_CODE)
 
 
+
 def connect_to_sock(socket):
     socket_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     while True:
@@ -132,6 +136,16 @@ def connect_to_sock(socket):
             print("cant connect to rfcb,please run the rf checkout box\rtry again in 5 seconds")
             time.sleep(5)
     return socket_conn
+
+
+def get_sat_name(norad):
+    sat_list = requests.get("https://db.satnogs.org/api/satellites/").text
+    sat_list = json.loads(sat_list)
+    for i in sat_list:
+        if i.get("norad_cat_id") == norad:
+            return i.get("name")
+
+
 
 def main():
     #create socket connection with the rfcb
@@ -149,6 +163,7 @@ def main():
     ant.start()
     rfcbDpThread.start()
     dp.update_dopler_hdsdr()
+
 
 
 if __name__ == '__main__':
