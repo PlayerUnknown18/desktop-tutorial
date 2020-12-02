@@ -17,7 +17,7 @@ class DoplerCorrection:
         self.port_comm = port_communication.DoplerPortCommunication(self.port, self.satellite_freq)
         self.__offset = jinfo_object.offset
         self.__flip_dopler_number = -1
-        self.doppler_satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)["DUCHIFAT-3"]
+        self.doppler_satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.config_data.satellite_name]
         self.dopler_station = Topos(jinfo_object.station_lat,jinfo_object.station_lon)
 
     def calculate_dopler(self,freq):
@@ -72,7 +72,7 @@ class UpdateSatelliteCords:
         self.azimuth = 18.9
         self.elevation = 20.1
         self.__elevation_to_radians_number = 180
-        self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)["DUCHIFAT-3"]
+        self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.config_data.satellite_name]
         self.station_lon = jinfo_object.station_lon
         self.station_lat = jinfo_object.station_lat
         self.station_alt = jinfo_object.station_elev
@@ -90,7 +90,7 @@ class UpdateSatelliteCords:
         while True:
             time.sleep(self.time_for_tuning_antennas)
             utc_time_now = datetime.datetime.utcnow()
-            orbital_object = pyorbital.orbital.Orbital("HOOPOE3","active.txt")
+            orbital_object = pyorbital.orbital.Orbital(self.config_data.satellite_name,"active.txt")
             self.azimuth,self.elevation = orbital_object.get_observer_look(utc_time_now,self.station_lon,self.station_lat,self.station_alt)
             print(f"satellite azimuth now:{self.azimuth}")
             print(f"satellite elevation now:{self.elevation}")
@@ -120,10 +120,23 @@ def update_modulation(sock_io):
     FSK_CODE = bytearray(FSK_CODE)
     sock_io.send(FSK_CODE)
 
+
+def connect_to_sock(socket):
+    socket_conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    while True:
+        try:
+            socket.connect(("127.0.0.1",4532))
+            print("connected to rfcb")
+            break
+        except:
+            print("cant connect to rfcb,please run the rf checkout box\rtry again in 5 seconds")
+            time.sleep(5)
+    return socket_conn
+
 def main():
-    socket_conn = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    socket_conn.connect(("127.0.0.1",4532))
-    print("connected to the rfcb")
+    #create socket connection with the rfcb
+    socket_conn = connect_to_sock(socket_conn)
+    #loads data from the config file
     load_json_object = jsonloader.JsonLoad()
     json_info = load_json_object.return_jinfo_object()
     print("got config data from json")

@@ -10,9 +10,9 @@ class Jinfo:
         self.station_lat = float(json_data['configs']['lat'])
         self.station_elev = float(json_data['configs']['elev'])
         self.offset = float(json_data['configs']['offset'])
-        self.time_for_tuning_antennas = int(json_data['configs']['Time for tuning antennas'])
+        self.time_for_tuning_antennas = int(json_data['configs']['Time_for_tuning_antennas'])
         self.antenna_port = json_data['configs']['antenna_port']
-        self.satellite_name = json_data['configs']['satellite name']
+        self.satellite_name = json_data['configs']['satellite_name']
 
 
 class JsonLoad:

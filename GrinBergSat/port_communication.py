@@ -2,10 +2,19 @@ import serial
 
 class DoplerPortCommunication:
     def __init__(self,port,default_freq):
-        self.dopler_ser = serial.Serial(port,timeout=1)
+        self.open_port(port)
         self.dopler_ser.write(str(default_freq).encode())
         self.__convert_to_freq_number = 1000000
         self.default_mode = b"MD2;"
+
+    def open_port(self,port):
+        while True:
+            try:
+                self.ser = serial.Serial(port,timeout=1)
+                break
+            except:
+                print("cannot open the port...\rtry again in 5 seconds")
+                time.sleep(5)
 
     def write_dopler_corr_to_port(self, freq):
         if len(freq) >= 11:
@@ -15,9 +24,20 @@ class DoplerPortCommunication:
             self.dopler_ser.write(freq.encode())
             self.dopler_ser.write(self.default_mode)
 
+
+
 class AntennaPortCommunication:
     def __init__(self,port):
-        self.ser = serial.Serial(port,timeout=1)
+        self.open_port(port)
+
+    def open_port(self,port):
+        while True:
+            try:
+                self.ser = serial.Serial(port,timeout=1)
+                break
+            except:
+                print("cannot open the port...\rtry again in 5 seconds")
+                time.sleep(5)
 
     def convert_to_format(self, az,el):
         el = int(el)
