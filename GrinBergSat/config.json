@@ -8,9 +8,9 @@
 		"lon":"34.826293",
 		"lat":"32.164634",
 		"elev":"0",
-		"Time for tuning antennas": "5",
+		"Time_for_tuning_antennas": "5",
 		"offset": "0.008", 
-		"satellite name":"DUCHIFAT-3"
+		"norad_id":"44854"
 	}
 
 
