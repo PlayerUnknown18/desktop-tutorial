@@ -12,7 +12,8 @@ class Jinfo:
         self.offset = float(json_data['configs']['offset'])
         self.time_for_tuning_antennas = int(json_data['configs']['Time_for_tuning_antennas'])
         self.antenna_port = json_data['configs']['antenna_port']
-        self.satellite_name = json_data['configs']['satellite_name']
+        self.norad_id = json_data['configs']['norad_id']
+
 
 
 class JsonLoad:

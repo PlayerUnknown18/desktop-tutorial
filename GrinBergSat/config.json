@@ -10,7 +10,8 @@
 		"elev":"0",
 		"Time_for_tuning_antennas": "5",
 		"offset": "0.008", 
-		"satellite_name":"DUCHIFAT-3"
+		"norad_id":"44854"
+
 	}
 
 
