@@ -15,6 +15,7 @@ class Jinfo:
         self.norad_id = json_data['configs']['norad_id']
 
 
+
 class JsonLoad:
     def __init__(self):
         with open("config.json","r") as config_file:
