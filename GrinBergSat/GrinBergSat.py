@@ -55,12 +55,19 @@ class DoplerCorrection:
                 freq = int(freq / 256)
                 i += 1
             try:
+                update_modulation(sock_io)
                 sock_io.send(data)
-                print(get_freq)
+                #print(get_freq)
             except:
                 print("except")
-                sock_io = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                sock_io.connect(("127.0.0.1", 4532))
+                try:
+                    sock_io = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    sock_io.connect(("127.0.0.1", 4532))
+                    print("connected")
+                except:
+                    print("try again in 5 seconds")
+                    time.sleep(5)
+                    pass
 
             get_freq = self.calculate_dopler(self.rfcb_freq) * 10 ** 6
             time.sleep(2)
@@ -148,13 +155,25 @@ def get_sat_name(norad):
 
 
 
-def main():
-    #create socket connection with the rfcb
-    socket_conn = connect_to_sock()
-    #loads data from the config file
-    load_json_object = jsonloader.JsonLoad()
-    json_info = load_json_object.return_jinfo_object()
-    print("got config data from json")
+
+def rfcbMode(json_info,socket_conn):
+    dp = DoplerCorrection(json_info)
+    dp.update_dopler_rfcb(socket_conn)
+    
+def hdsdrMode(json_info):
+    dp = DoplerCorrection(json_info)
+    dp.update_dopler_hdsdr()
+
+def halfMode(json_info,socket_conn):
+    dp = DoplerCorrection(json_info)
+    rfcbDpThread = threading.Thread(target=dp.update_dopler_rfcb,args=(socket_conn,))
+    print("Create dopler correction threads")
+    update_modulation(socket_conn)
+    print("modulation update:succsess")
+    rfcbDpThread.start()
+    dp.update_dopler_hdsdr()
+
+def fullMode(json_info,socket_conn):
     dp = DoplerCorrection(json_info)
     rfcbDpThread = threading.Thread(target=dp.update_dopler_rfcb,args=(socket_conn,))
     print("Create dopler correction threads")
@@ -165,7 +184,21 @@ def main():
     rfcbDpThread.start()
     dp.update_dopler_hdsdr()
 
+def main():
+    #create socket connection with the rfcb
+    socket_conn = connect_to_sock()
+    #loads data from the config file
+    load_json_object = jsonloader.JsonLoad()
+    json_info = load_json_object.return_jinfo_object()
 
+    if json_info.mode == "full":
+        fullMode(json_info,socket)
+    elif json_info.mode == "half_mode":
+        halfMode(json_info,socket)
+    elif json_info.mode == "rfcb":
+        rfcbMode(json_info,socket)
+    elif json_info.mode == "hdsdr":
+        hdsdrMode(json_info)
 
 if __name__ == '__main__':
     main()

@@ -1,9 +1,10 @@
 import serial
+import time
 
 class DoplerPortCommunication:
     def __init__(self,port,default_freq):
         self.open_port(port)
-        self.dopler_ser.write(str(default_freq).encode())
+        self.ser.write(str(default_freq).encode())
         self.__convert_to_freq_number = 1000000
         self.default_mode = b"MD2;"
 
@@ -13,7 +14,7 @@ class DoplerPortCommunication:
                 self.ser = serial.Serial(port,timeout=1)
                 break
             except:
-                print("cannot open the port...\rtry again in 5 seconds")
+                print("cannot open the port...\ntry again in 5 seconds")
                 time.sleep(5)
 
     def write_dopler_corr_to_port(self, freq):
@@ -21,8 +22,8 @@ class DoplerPortCommunication:
             a = list(freq)[:13]
             freq = int(float(''.join(a)) * self.__convert_to_freq_number)
             freq = "FA0" + str(freq) + ";"
-            self.dopler_ser.write(freq.encode())
-            self.dopler_ser.write(self.default_mode)
+            self.ser.write(freq.encode())
+            self.ser.write(self.default_mode)
 
 
 

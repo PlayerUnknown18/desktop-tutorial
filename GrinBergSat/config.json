@@ -3,14 +3,15 @@
 	{
 		"hdsdr_port":"COM30",
 		"antenna_port": "COM8",
-		"hdsdr_freq":"436.400",
-		"rfcb_freq":"145.600",
+		"hdsdr_freq":"437.498",
+		"rfcb_freq":"145.970",
 		"lon":"34.826293",
 		"lat":"32.164634",
 		"elev":"0",
 		"Time_for_tuning_antennas": "5",
 		"offset": "0.008", 
-		"norad_id":"44854"
+		"norad_id":"37855",
+		"mode":"full"
 
 	}
 

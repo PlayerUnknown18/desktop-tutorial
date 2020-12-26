@@ -13,6 +13,7 @@ class Jinfo:
         self.time_for_tuning_antennas = int(json_data['configs']['Time_for_tuning_antennas'])
         self.antenna_port = json_data['configs']['antenna_port']
         self.norad_id = json_data['configs']['norad_id']
+        self.mode = json_data['configs']['mode']
 
 
 
