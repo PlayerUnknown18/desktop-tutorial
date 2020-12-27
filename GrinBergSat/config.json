@@ -1,10 +1,10 @@
 {
 	"configs":
 	{
-		"hdsdr_port":"COM30",
+		"hdsdr_port":"COM9",
 		"antenna_port": "COM8",
-		"hdsdr_freq":"437.498",
-		"rfcb_freq":"145.970",
+		"hdsdr_freq":"436.4",
+		"rfcb_freq":"145.97",
 		"lon":"34.826293",
 		"lat":"32.164634",
 		"elev":"0",

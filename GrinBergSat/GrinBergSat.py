@@ -192,11 +192,11 @@ def main():
     json_info = load_json_object.return_jinfo_object()
 
     if json_info.mode == "full":
-        fullMode(json_info,socket)
+        fullMode(json_info,socket_conn)
     elif json_info.mode == "half_mode":
-        halfMode(json_info,socket)
+        halfMode(json_info,socket_conn)
     elif json_info.mode == "rfcb":
-        rfcbMode(json_info,socket)
+        rfcbMode(json_info,socket_conn)
     elif json_info.mode == "hdsdr":
         hdsdrMode(json_info)
 
