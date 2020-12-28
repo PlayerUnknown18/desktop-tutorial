@@ -11,8 +11,9 @@
 		"Time_for_tuning_antennas": "5",
 		"offset": "0.008", 
 		"norad_id":"37855",
-		"mode":"full"
-
+		"rfcb":"true",
+		"hdsdr":"true",
+		"antenna":"false"
 	}
 
 

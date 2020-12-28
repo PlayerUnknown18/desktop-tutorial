@@ -161,8 +161,6 @@ def get_sat_name(norad):
 
 
 def main():
-    #create socket connection with the rfcb
-    socket_conn = connect_to_sock()
     #loads data from the config file
     load_json_object = jsonloader.JsonLoad()
     json_info = load_json_object.return_jinfo_object()
@@ -174,8 +172,8 @@ def main():
 
     if json_info.hdsdr_flag.lower() == "true":
         #can be more efficient by adding one more if
-        dp = DoplerCorrection(json_info)
-        hdsdrDpThread = threading.Thread(target=dp.update_dopler_hdsdr())
+        dp_hdsdr = DoplerCorrection(json_info)
+        hdsdrDpThread = threading.Thread(target=dp_hdsdr.update_dopler_hdsdr())
         hdsdrDpThread.start()
 
     if json_info.antenna_flag.lower() == "true":
