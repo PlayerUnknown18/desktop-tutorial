@@ -43,6 +43,12 @@ class DoplerCorrection:
             print(dopler_freq)
             self.port_comm.write_dopler_corr_to_port(str(dopler_freq))
 
+
+    def rfcb_correction_starter(self):
+        sock_io = connect_to_sock()
+        update_modulation(sock_io)
+        self.update_dopler_rfcb(sock_io)
+
     def update_dopler_rfcb(self,sock_io):
         get_freq = float(self.rfcb_freq)
         while True:
@@ -154,36 +160,6 @@ def get_sat_name(norad):
             return i.get("name")
 
 
-
-
-def rfcbMode(json_info,socket_conn):
-    dp = DoplerCorrection(json_info)
-    dp.update_dopler_rfcb(socket_conn)
-    
-def hdsdrMode(json_info):
-    dp = DoplerCorrection(json_info)
-    dp.update_dopler_hdsdr()
-
-def halfMode(json_info,socket_conn):
-    dp = DoplerCorrection(json_info)
-    rfcbDpThread = threading.Thread(target=dp.update_dopler_rfcb,args=(socket_conn,))
-    print("Create dopler correction threads")
-    update_modulation(socket_conn)
-    print("modulation update:succsess")
-    rfcbDpThread.start()
-    dp.update_dopler_hdsdr()
-
-def fullMode(json_info,socket_conn):
-    dp = DoplerCorrection(json_info)
-    rfcbDpThread = threading.Thread(target=dp.update_dopler_rfcb,args=(socket_conn,))
-    print("Create dopler correction threads")
-    update_modulation(socket_conn)
-    print("modulation update:succsess")
-    ant = UpdateSatelliteCordsThread(json_info)
-    ant.start()
-    rfcbDpThread.start()
-    dp.update_dopler_hdsdr()
-
 def main():
     #create socket connection with the rfcb
     socket_conn = connect_to_sock()
@@ -191,14 +167,20 @@ def main():
     load_json_object = jsonloader.JsonLoad()
     json_info = load_json_object.return_jinfo_object()
 
-    if json_info.mode == "full":
-        fullMode(json_info,socket)
-    elif json_info.mode == "half_mode":
-        halfMode(json_info,socket)
-    elif json_info.mode == "rfcb":
-        rfcbMode(json_info,socket)
-    elif json_info.mode == "hdsdr":
-        hdsdrMode(json_info)
+    if json_info.rfcb_flag.lower() == "true":
+        dp = DoplerCorrection(json_info)
+        rfcbDpThread = threading.Thread(target=dp.rfcb_correction_starter)
+        rfcbDpThread.start()
+
+    if json_info.hdsdr_flag.lower() == "true":
+        #can be more efficient by adding one more if
+        dp = DoplerCorrection(json_info)
+        hdsdrDpThread = threading.Thread(target=dp.update_dopler_hdsdr())
+        hdsdrDpThread.start()
+
+    if json_info.antenna_flag.lower() == "true":
+        ant = UpdateSatelliteCordsThread(json_info)
+        ant.start()
 
 if __name__ == '__main__':
     main()
