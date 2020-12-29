@@ -1,7 +1,7 @@
 {
 	"configs":
 	{
-		"hdsdr_port":"COM9",
+		"hdsdr_port":"COM6",
 		"antenna_port": "COM8",
 		"hdsdr_freq":"436.4",
 		"rfcb_freq":"145.97",
@@ -13,7 +13,7 @@
 		"norad_id":"37855",
 		"rfcb":"true",
 		"hdsdr":"true",
-		"antenna":"false"
+		"antenna":"true"
 	}
 
 

@@ -10,13 +10,15 @@ import requests
 import json
 
 class DoplerCorrection:
-    def __init__(self,jinfo_object):
+    def __init__(self,jinfo_object,device):
         self.config_data = jinfo_object
         self.satellite_freq = float(jinfo_object.hdsdr_freq)
         self.rfcb_freq = float(jinfo_object.rfcb_freq)
         self.__speed_of_light = 299792458
-        self.port = jinfo_object.hdsdr_port
-        self.port_comm = port_communication.DoplerPortCommunication(self.port, self.satellite_freq)
+        if device == "hdsdr":
+            self.port = jinfo_object.hdsdr_port
+            self.port_comm = port_communication.DoplerPortCommunication(self.port, self.satellite_freq)
+
         self.__offset = jinfo_object.offset
         self.__flip_dopler_number = -1
         self.satellite_name = get_sat_name(int(self.config_data.norad_id))
@@ -166,13 +168,13 @@ def main():
     json_info = load_json_object.return_jinfo_object()
 
     if json_info.rfcb_flag.lower() == "true":
-        dp = DoplerCorrection(json_info)
+        dp = DoplerCorrection(json_info,"rfcb")
         rfcbDpThread = threading.Thread(target=dp.rfcb_correction_starter)
         rfcbDpThread.start()
 
     if json_info.hdsdr_flag.lower() == "true":
         #can be more efficient by adding one more if
-        dp_hdsdr = DoplerCorrection(json_info)
+        dp_hdsdr = DoplerCorrection(json_info,"hdsdr")
         hdsdrDpThread = threading.Thread(target=dp_hdsdr.update_dopler_hdsdr())
         hdsdrDpThread.start()
 
