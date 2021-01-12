@@ -1,2 +1,0 @@
-just click on the GrinBergSat.py file and shrek
-if you want to get the next passes write start and then get_next_passes {number of passes}
