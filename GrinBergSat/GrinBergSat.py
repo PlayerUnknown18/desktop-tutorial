@@ -155,6 +155,8 @@ def connect_to_sock():
 
 
 def get_sat_name(norad):
+    satellite = requests.get("https://celestrak.com/satcat/tle.php?CATNR=44854").text
+    satellite = satellite[:satellite.find("\n")-1].strip()
     sat_list = requests.get("https://db.satnogs.org/api/satellites/").text
     sat_list = json.loads(sat_list)
     for i in sat_list:
