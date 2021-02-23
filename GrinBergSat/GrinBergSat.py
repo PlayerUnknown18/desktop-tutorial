@@ -175,7 +175,7 @@ def main():
     if json_info.hdsdr_flag.lower() == "true":
         #can be more efficient by adding one more if
         dp_hdsdr = DoplerCorrection(json_info,"hdsdr")
-        hdsdrDpThread = threading.Thread(target=dp_hdsdr.update_dopler_hdsdr())
+        hdsdrDpThread = threading.Thread(target=dp_hdsdr.update_dopler_hdsdr
         hdsdrDpThread.start()
 
     if json_info.antenna_flag.lower() == "true":
