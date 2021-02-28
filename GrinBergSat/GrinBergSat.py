@@ -8,6 +8,7 @@ import pyorbital.orbital
 import socket
 import requests
 import json
+import os
 
 class DoplerCorrection:
     def __init__(self,jinfo_object,device):
@@ -25,7 +26,7 @@ class DoplerCorrection:
         self.doppler_satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
         self.dopler_station = Topos(jinfo_object.station_lat,jinfo_object.station_lon)
 
-    def calculate_dopler(self,freq):
+    def calculate_dopler(self,freq,offset,mode):
         timescale = load.timescale(builtin=True)
         t = timescale.utc(datetime.datetime.utcnow().replace(tzinfo=utc))
         t1 = timescale.utc(t.utc_datetime() + datetime.timedelta(seconds=1))
@@ -34,14 +35,19 @@ class DoplerCorrection:
         range1 = diff.distance().km
         range2 = diff1.distance().km
         change = (range1 - range2) * 1000
-        dopler_corr = (freq * (self.__speed_of_light + change) / self.__speed_of_light) - self.__offset
+        if mode == "uplink":
+            dopler_corr = (freq * (self.__speed_of_light - change) / self.__speed_of_light) - offset
+        elif mode == "downlink":
+            dopler_corr = (freq * (self.__speed_of_light + change) / self.__speed_of_light) - offset
+        else:
+            raise "line 43"
         return dopler_corr
 
 
     def update_dopler_hdsdr(self):
         while True:
             time.sleep(0.3)
-            dopler_freq = self.calculate_dopler(self.satellite_freq)
+            dopler_freq = self.calculate_dopler(self.satellite_freq,self.__offset,"downlink")
             print(dopler_freq)
             self.port_comm.write_dopler_corr_to_port(str(dopler_freq))
 
@@ -77,7 +83,7 @@ class DoplerCorrection:
                     time.sleep(5)
                     pass
 
-            get_freq = self.calculate_dopler(self.rfcb_freq) * 10 ** 6
+            get_freq = self.calculate_dopler(self.rfcb_freq, 0, "uplink") * 10 ** 6   #145.970 -> 145970
             time.sleep(2)
 
 
@@ -155,14 +161,13 @@ def connect_to_sock():
 
 
 def get_sat_name(norad):
-    satellite = requests.get("https://celestrak.com/satcat/tle.php?CATNR=44854").text
+    satellite = requests.get(f"https://celestrak.com/satcat/tle.php?CATNR={norad}").text
     satellite = satellite[:satellite.find("\n")-1].strip()
-    sat_list = requests.get("https://db.satnogs.org/api/satellites/").text
-    sat_list = json.loads(sat_list)
-    for i in sat_list:
-        if i.get("norad_cat_id") == norad:
-            return i.get("name")
+    return satellite
 
+"""delete active.txt(contain the TLE of the satellites)"""
+def delete_active_file():
+    os.remove("active.txt")
 
 def main():
     #loads data from the config file
@@ -177,7 +182,7 @@ def main():
     if json_info.hdsdr_flag.lower() == "true":
         #can be more efficient by adding one more if
         dp_hdsdr = DoplerCorrection(json_info,"hdsdr")
-        hdsdrDpThread = threading.Thread(target=dp_hdsdr.update_dopler_hdsdr
+        hdsdrDpThread = threading.Thread(target=dp_hdsdr.update_dopler_hdsdr)
         hdsdrDpThread.start()
 
     if json_info.antenna_flag.lower() == "true":

@@ -10,7 +10,7 @@
 		"elev":"0",
 		"Time_for_tuning_antennas": "5",
 		"offset": "0.008", 
-		"norad_id":"37855",
+		"norad_id":"44854",
 		"rfcb":"true",
 		"hdsdr":"true",
 		"antenna":"true"
