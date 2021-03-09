@@ -69,7 +69,7 @@ class DoplerCorrection:
                 freq = int(freq / 256)
                 i += 1
             try:
-                update_modulation(sock_io)
+                #update_modulation(sock_io)
                 sock_io.send(data)
                 #print(get_freq)
             except:
