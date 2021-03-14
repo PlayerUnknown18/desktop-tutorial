@@ -1,23 +1,18 @@
 {
-	"configs":
-	{
-		"hdsdr_port":"COM6",
+	"configs": {
+		"hdsdr_port": "COM6",
 		"antenna_port": "COM8",
-		"hdsdr_freq":"436.4",
-		"rfcb_freq":"145.97",
-		"lon":"34.826293",
-		"lat":"32.164634",
-		"elev":"0",
+		"hdsdr_freq": "436.4",
+		"rfcb_freq": "145.97",
+		"lon": "34.826293",
+		"lat": "32.164634",
+		"elev": "0",
 		"Time_for_tuning_antennas": "5",
-		"offset": "0.008", 
-		"norad_id":"44854",
-		"rfcb":"true",
-		"hdsdr":"true",
-		"antenna":"true"
+		"offset": "0.008",
+		"norad_id": "44854",
+		"rfcb": "true",
+		"hdsdr": "true",
+		"antenna": "true",
+		"tle_type": "file"
 	}
-
-
-
-
-
 }
