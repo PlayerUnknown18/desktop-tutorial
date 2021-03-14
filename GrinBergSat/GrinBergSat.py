@@ -23,7 +23,11 @@ class DoplerCorrection:
         self.__offset = jinfo_object.offset
         self.__flip_dopler_number = -1
         self.satellite_name = get_sat_name(int(self.config_data.norad_id))
-        self.doppler_satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
+        if jinfo_object.tle_type == "file":
+            self.doppler_satellite = self.load_tle_file("tle.txt")
+        else:
+            self.doppler_satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
+        
         self.dopler_station = Topos(jinfo_object.station_lat,jinfo_object.station_lon)
 
     def calculate_dopler(self,freq,offset,mode):
@@ -97,7 +101,11 @@ class UpdateSatelliteCords:
         self.elevation = 20.1
         self.__elevation_to_radians_number = 180
         self.satellite_name = get_sat_name(int(self.config_data.norad_id))
-        self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
+        if jinfo_object.tle_type == "file":
+            self.satellite = self.load_tle_file("tle.txt")
+        else:
+            self.satellite = load.tle("https://celestrak.com/NORAD/elements/active.txt",reload=False)[self.satellite_name]
+        
         self.station_lon = jinfo_object.station_lon
         self.station_lat = jinfo_object.station_lat
         self.station_alt = jinfo_object.station_elev
